@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Language Communication App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🤝</span>
+                Sign Language Communicator
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="statusText">Initializing...</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container">
+        <div class="main-layout">
+            <!-- Left Panel: Webcam Feed -->
+            <section class="panel webcam-panel">
+                <h2>Live Webcam Feed</h2>
+                <div class="video-container">
+                    <img id="videoFeed" src="{{ url_for('video_feed') }}" alt="Webcam Feed" />
+                    <div class="camera-overlay">
+                        <p>Align your hand within the frame for best recognition</p>
+                    </div>
+                </div>
+                <div class="camera-controls">
+                    <button id="toggleBtn" class="btn btn-primary" onclick="toggleWebcam()">
+                        <span class="btn-icon">📹</span> Camera On
+                    </button>
+                    <button class="btn btn-secondary" onclick="captureSnapshot()">
+                        <span class="btn-icon">📸</span> Snapshot
+                    </button>
+                </div>
+            </section>
+
+            <!-- Right Panel: Recognition Results -->
+            <section class="panel results-panel">
+                <!-- Current Prediction -->
+                <div class="card card-prediction">
+                    <h3>Current Prediction</h3>
+                    <div class="prediction-display">
+                        <div class="predicted-char" id="predictedChar">?</div>
+                        <div class="confidence-container">
+                            <div class="confidence-label">Confidence</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill" id="confidenceFill" style="width: 0%"></div>
+                            </div>
+                            <div class="confidence-text" id="confidenceText">0%</div>
+                        </div>
+                    </div>
+                    <div class="prediction-stats">
+                        <p><strong>Last Updated:</strong> <span id="lastUpdated">Just now</span></p>
+                        <p><strong>Predictions Count:</strong> <span id="predictionCount">0</span></p>
+                    </div>
+                </div>
+
+                <!-- Text Builder -->
+                <div class="card card-text-builder">
+                    <h3>Text Builder</h3>
+                    <div class="text-display" id="textDisplay">
+                        <div class="displayed-text" id="displayedText"></div>
+                        <div class="cursor">|</div>
+                    </div>
+                    <div class="text-controls">
+                        <button class="btn btn-small" onclick="addCurrentPrediction()">
+                            <span class="btn-icon">➕</span> Add
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="clearText()">
+                            <span class="btn-icon">🗑️</span> Clear
+                        </button>
+                        <button class="btn btn-small btn-secondary" onclick="removeLastChar()">
+                            <span class="btn-icon">⌫</span> Backspace
+                        </button>
+                    </div>
+                    <div class="text-actions">
+                        <button class="btn btn-full" onclick="copyToClipboard()">
+                            <span class="btn-icon">📋</span> Copy to Clipboard
+                        </button>
+                        <button class="btn btn-full" onclick="speakText()">
+                            <span class="btn-icon">🔊</span> Read Aloud
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="card card-settings">
+                    <h3>Settings</h3>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="autoAddCheckbox" checked>
+                            Auto-add high confidence predictions
+                        </label>
+                        <label>
+                            <input type="checkbox" id="soundCheckbox" checked>
+                            Enable sound feedback
+                        </label>
+                        <label>
+                            <input type="checkbox" id="landmarksCheckbox" checked>
+                            Show hand landmarks
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Prediction History -->
+        <section class="panel panel-history">
+            <h3>Prediction History (Last 30)</h3>
+            <div class="history-container" id="historyContainer">
+                <p class="empty-state">No predictions yet. Start using the app!</p>
+            </div>
+        </section>
+
+        <!-- Information Panel -->
+        <section class="panel panel-info">
+            <h3>How to Use</h3>
+            <div class="info-content">
+                <ol>
+                    <li><strong>Position your hand:</strong> Place your hand in front of the webcam</li>
+                    <li><strong>Make a gesture:</strong> Form a sign language letter (A-Z)</li>
+                    <li><strong>Wait for prediction:</strong> The system will recognize and display the letter</li>
+                    <li><strong>Build text:</strong> Click "Add" to add predicted letters to your message</li>
+                    <li><strong>Use text:</strong> Copy or use text-to-speech for your message</li>
+                </ol>
+                <div class="tips">
+                    <p><strong>💡 Tips for better recognition:</strong></p>
+                    <ul>
+                        <li>Ensure good lighting on your hand</li>
+                        <li>Keep your hand clearly visible in the frame</li>
+                        <li>Hold the gesture for a moment before changing</li>
+                        <li>Use the landmarks to see how the system see your hand</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Sign Language Communication App | Built with OpenCV, TensorFlow & Flask | Made with ❤️ for inclusivity</p>
+    </footer>
+
+    <!-- Hidden Canvas for Snapshot -->
+    <canvas id="canvas" style="display: none;"></canvas>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
